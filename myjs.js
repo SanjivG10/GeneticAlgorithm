@@ -1,6 +1,6 @@
-const NO_OF_DATA_SAMPLE = 500;
-const TARGET_WORD = "oh budi ma manxe nikai risalu mudi";
-const MUTATION_RATE = 0.001;
+const NO_OF_DATA_SAMPLE = 200;
+const TARGET_WORD = "Malai deep learning aaudaina";
+const MUTATION_RATE = 0.01;
 
 const myPopulation = new Population(
   NO_OF_DATA_SAMPLE,
