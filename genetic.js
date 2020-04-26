@@ -32,17 +32,39 @@ class Population {
   };
 
   getParent = () => {
-    const parentPool = [];
-
+    // we use another method of sampling!
+    let count = 0;
+    let maxFitness = 0;
     for (let i = 0; i < this.numberOfDataToSample; i++) {
-      const n = Math.floor(this.populationVal[i].fitness * this.target.length);
-      for (let j = 0; j < n; j++) {
-        parentPool.push(this.populationVal[i]);
+      if (maxFitness < this.populationVal[i].fitness) {
+        maxFitness = this.populationVal[i].fitness;
       }
     }
 
-    const index = Math.floor(Math.random() * parentPool.length);
-    return parentPool[index];
+    while (true) {
+      const parentIndexToSelect = floor(random(this.numberOfDataToSample));
+
+      const prob = random(maxFitness);
+      //the magic begins here!
+      // we are getting any random numbers between 0 to maximum fitness right?
+      // the more fitness we have the more chance it has to be selected
+      // say our pool has like [10 20 30 40 50 60] as fitness
+      // how do we select it?
+      // 50 must have greater chance right? ..
+      // so prob came like 45.. and our selected value is 10 suppose
+      // is 45 < 10 is false statement.. but if we get 60 as selected value
+      // then 45<60 is true.. more chance of it right?
+      if (this.populationVal[parentIndexToSelect].fitness > prob) {
+        return this.populationVal[parentIndexToSelect];
+      }
+      count++;
+
+      if (count > 100) {
+        return this.populationVal[parentIndexToSelect];
+      }
+    }
+
+    // more fitness means more chance of getting selected right so let me get highest fitness first
   };
 
   crossover = () => {
@@ -71,12 +93,13 @@ class Population {
   };
 
   generateNewParent() {
+    const newPopulation = [];
     for (let i = 0; i < this.numberOfDataToSample; i++) {
       let newCHILDText = this.crossover();
       let newParentFromChild = new DNA(this.target, newCHILDText);
       newParentFromChild.mutationRate = this.mutationRate;
       newParentFromChild.mutation();
-      this.populationVal[i] = newParentFromChild;
+      newPopulation[i] = newParentFromChild;
       if (!this.done) {
         currentText.innerText = newParentFromChild.dna.join("");
       }
@@ -85,6 +108,7 @@ class Population {
         this.done = true;
       }
     }
+    this.populationVal = newPopulation;
     generationNumber.innerText = this.generation;
     this.generation++;
   }

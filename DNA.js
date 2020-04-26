@@ -53,7 +53,7 @@ class DNA {
       }
     }
 
-    this.fitness = count / this.target.length;
+    this.fitness = count;
   };
 
   mutation = () => {
